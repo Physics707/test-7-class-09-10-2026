@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05070f">
+<title>Тест по физике · 7 класс · Скорость и средняя скорость</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ БАЗА / ТЕМЫ ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  --bg0:#05070f; --panel:#0d1526; --panel2:#0a1122;
+  --line:rgba(130,180,255,.15);
+  --cyan:#3be8ff; --pink:#ff4fa3; --amber:#ffb648; --green:#3dffa8; --red:#ff5470;
+  --ink:#e8f1ff; --mut:#8ea3c7;
+}
+body{
+  font-family:'Manrope',system-ui,sans-serif; color:var(--ink); min-height:100dvh; overflow-x:hidden;
+  background:
+    radial-gradient(1100px 520px at 88% -12%, rgba(255,79,163,.10), transparent 60%),
+    radial-gradient(900px 620px at -12% 112%, rgba(59,232,255,.09), transparent 60%),
+    var(--bg0);
+}
+/* фоновая «миллиметровка» */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(96,160,255,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(96,160,255,.05) 1px,transparent 1px);
+  background-size:28px 28px;}
+/* светящиеся частицы */
+.fx{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.fx i{position:absolute;border-radius:50%;opacity:.45;filter:blur(1px);animation:floaty 14s ease-in-out infinite alternate}
+.fx i:nth-child(1){left:8%;top:18%;width:6px;height:6px;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
+.fx i:nth-child(2){left:86%;top:12%;width:4px;height:4px;background:var(--pink);box-shadow:0 0 12px var(--pink);animation-duration:18s}
+.fx i:nth-child(3){left:70%;top:60%;width:7px;height:7px;background:var(--cyan);box-shadow:0 0 16px var(--cyan);animation-duration:11s}
+.fx i:nth-child(4){left:16%;top:72%;width:5px;height:5px;background:var(--amber);box-shadow:0 0 12px var(--amber);animation-duration:16s}
+.fx i:nth-child(5){left:46%;top:34%;width:3px;height:3px;background:var(--pink);box-shadow:0 0 10px var(--pink);animation-duration:20s}
+.fx i:nth-child(6){left:30%;top:88%;width:5px;height:5px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);animation-duration:13s}
+@keyframes floaty{to{transform:translateY(-48px) translateX(20px)}}
+
+.app{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:22px 16px calc(44px + env(safe-area-inset-bottom))}
+.screen{display:none}
+.screen.on{display:block;animation:scrIn .5s cubic-bezier(.22,.9,.3,1)}
+@keyframes scrIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ============ ПАНЕЛИ / КНОПКИ ============ */
+.panel{background:linear-gradient(180deg,#0f1832,#0b1224);border:1px solid var(--line);border-radius:18px;
+  padding:26px 22px;box-shadow:0 22px 55px rgba(0,0,0,.5)}
+.badge{display:inline-flex;align-items:center;gap:8px;font:700 11px 'JetBrains Mono',monospace;letter-spacing:.2em;
+  color:var(--cyan);border:1px solid rgba(59,232,255,.4);background:rgba(59,232,255,.07);
+  padding:6px 12px;border-radius:999px;margin-bottom:14px}
+h1{font-family:'Unbounded';font-weight:800;font-size:clamp(24px,6.2vw,34px);line-height:1.16;letter-spacing:.3px}
+.hl{color:var(--cyan);text-shadow:0 0 20px rgba(59,232,255,.55)}
+.sub{color:var(--mut);font-size:14px;margin-top:10px;line-height:1.5}
+.teacher{margin:18px 0 4px;padding:12px 14px;border-left:3px solid var(--pink);border-radius:0 12px 12px 0;
+  background:rgba(255,79,163,.08);font-weight:700;font-size:15px;line-height:1.45}
+.teacher small{display:block;color:var(--mut);font-weight:600;font-size:12px;margin-top:2px}
+
+.field{margin-top:16px}
+.field label{display:block;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-weight:800;margin-bottom:7px}
+.field input,.field select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;
+  color:var(--ink);font:600 16px 'Manrope';padding:13px 14px;outline:none;transition:border-color .2s,box-shadow .2s;appearance:none;-webkit-appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%233be8ff' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(59,232,255,.15),0 0 16px rgba(59,232,255,.2)}
+.field.err input,.field.err select{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,84,112,.15)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{display:block;width:100%;padding:15px 18px;border-radius:13px;border:1px solid var(--line);background:#0c1528;
+  color:var(--ink);font:800 16px 'Manrope';cursor:pointer;transition:.22s;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.btn:active{transform:scale(.985)}
+.btn-primary{border-color:rgba(59,232,255,.5);color:#dcf9ff;background:linear-gradient(180deg,rgba(59,232,255,.16),rgba(59,232,255,.04))}
+.btn-primary:hover{box-shadow:0 0 22px rgba(59,232,255,.35);transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none!important;transform:none}
+.btn-next.armed{border-color:var(--cyan);color:#eaffff;
+  box-shadow:0 0 16px rgba(59,232,255,.55),0 0 44px rgba(59,232,255,.18);animation:armPulse 1.5s ease-in-out infinite}
+@keyframes armPulse{50%{box-shadow:0 0 28px rgba(59,232,255,.8),0 0 64px rgba(59,232,255,.3)}}
+.start-btn{margin-top:24px}
+
+/* ============ ДИСКЛЕЙМЕР ============ */
+.rules{list-style:none;margin:6px 0 18px;display:grid;gap:10px}
+.rules li{display:flex;gap:12px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;padding:11px 13px;font-size:14.5px;line-height:1.5}
+.rules li span{flex:0 0 auto;min-width:34px;text-align:center;font:700 12.5px 'JetBrains Mono';color:var(--cyan);
+  border:1px solid rgba(59,232,255,.35);border-radius:8px;padding:4px 5px;background:rgba(59,232,255,.06)}
+.honest{display:flex;gap:11px;align-items:flex-start;background:rgba(61,255,168,.06);border:1px solid rgba(61,255,168,.3);
+  border-radius:12px;padding:13px 14px;font-size:14.5px;line-height:1.5;cursor:pointer;margin-bottom:16px}
+.honest input{width:21px;height:21px;flex:0 0 auto;accent-color:var(--cyan);margin-top:1px}
+
+/* ============ HUD / ТАЙМЕР ============ */
+.qwho{font:700 12px 'JetBrains Mono';letter-spacing:.1em;color:var(--mut);margin-bottom:10px;text-transform:uppercase}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.qcount{font:700 12.5px 'JetBrains Mono';letter-spacing:.16em;color:var(--ink)}
+.segs{display:flex;gap:5px;margin-top:7px}
+.segs i{width:16px;height:5px;border-radius:3px;background:#1b2a47;transition:.3s}
+.segs i.done{background:var(--cyan);box-shadow:0 0 8px rgba(59,232,255,.7)}
+.segs i.cur{background:var(--amber);box-shadow:0 0 8px rgba(255,182,72,.7);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.35}}
+.timer{position:relative;width:64px;height:64px;flex:0 0 auto}
+.timer svg{width:64px;height:64px;transform:rotate(-90deg)}
+.tbg{fill:none;stroke:#182742;stroke-width:5}
+.tfg{fill:none;stroke:var(--cyan);stroke-width:5;stroke-linecap:round;stroke-dasharray:169.65;filter:drop-shadow(0 0 5px rgba(59,232,255,.6))}
+.ttime{position:absolute;inset:0;display:grid;place-items:center;font:700 14.5px 'JetBrains Mono'}
+.timer.warn .tfg{stroke:var(--amber);filter:drop-shadow(0 0 5px rgba(255,182,72,.7))}
+.timer.danger .tfg{stroke:var(--red);filter:drop-shadow(0 0 6px rgba(255,84,112,.8))}
+.timer.danger .ttime{color:var(--red);animation:blink .7s infinite}
+
+/* ============ КАРТОЧКА ВОПРОСА ============ */
+.qcard{background:linear-gradient(180deg,#0f1832,#0b1224);border:1px solid var(--line);border-radius:18px;
+  padding:20px 18px;box-shadow:0 18px 46px rgba(0,0,0,.45);animation:cardIn .45s cubic-bezier(.22,.9,.3,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.985)}}
+.qmeta{display:flex;gap:8px;margin-bottom:13px;flex-wrap:wrap}
+.chip{font:700 10.5px 'JetBrains Mono';letter-spacing:.16em;padding:5px 11px;border-radius:999px;
+  border:1px solid rgba(59,232,255,.4);color:var(--cyan);background:rgba(59,232,255,.08)}
+.chip.ghost{border-color:var(--line);color:var(--mut);background:transparent}
+.chip.task{border-color:rgba(255,182,72,.45);color:var(--amber);background:rgba(255,182,72,.08)}
+.qtext{font:600 17.5px/1.52 'Manrope'}
+.qfig{margin:15px 0 3px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:10px}
+.qfig svg{display:block;width:100%;height:auto}
+.answers{display:grid;gap:10px;margin-top:16px}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:13px 14px;background:#0b1326;
+  border:1px solid var(--line);border-radius:13px;color:var(--ink);font:600 15.5px/1.45 'Manrope';cursor:pointer;transition:.2s;touch-action:manipulation}
+.opt:hover{border-color:rgba(59,232,255,.45);transform:translateX(3px)}
+.opt-k{flex:0 0 30px;height:30px;display:grid;place-items:center;border:1px solid var(--line);border-radius:9px;
+  font:700 13px 'JetBrains Mono';color:var(--mut);transition:.2s;margin-top:1px}
+.opt.lit{border-color:var(--cyan);background:rgba(59,232,255,.10);
+  box-shadow:0 0 14px rgba(59,232,255,.45),inset 0 0 18px rgba(59,232,255,.08)}
+.opt.lit .opt-k{background:var(--cyan);color:#04121a;border-color:var(--cyan);box-shadow:0 0 12px rgba(59,232,255,.7)}
+.numwrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#0b1326;border:1px solid var(--line);border-radius:14px;padding:16px 14px}
+.numlab{font-weight:800;font-size:15px}
+.numin{width:150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--cyan);
+  font:700 22px 'JetBrains Mono';padding:11px 13px;text-align:center;outline:none;transition:.2s}
+.numin:focus{border-color:var(--cyan)}
+.numin.lit{border-color:var(--cyan);box-shadow:0 0 18px rgba(59,232,255,.55),inset 0 0 14px rgba(59,232,255,.08)}
+.numhint{font:700 11px 'JetBrains Mono';letter-spacing:.1em;color:var(--mut);text-transform:uppercase}
+.qfoot{margin-top:16px}
+
+/* ============ SVG: ГРАФИКИ / СХЕМЫ ============ */
+.gx-min{stroke:rgba(96,160,255,.10);stroke-width:1}
+.gx-maj{stroke:rgba(96,160,255,.24);stroke-width:1}
+.gx-axis{stroke:#9fc4ec;stroke-width:1.6}
+.gx-num{fill:#93a9cc;font:500 10.5px 'JetBrains Mono',monospace}
+.gx-lab{fill:var(--cyan);font:700 12.5px 'JetBrains Mono',monospace}
+.gx-line{fill:none;stroke:var(--cyan);stroke-width:2.6;filter:drop-shadow(0 0 6px rgba(59,232,255,.75))}
+.gx-dot{fill:#0a1120;stroke:var(--cyan);stroke-width:2.4}
+.sch-grid{stroke:rgba(96,160,255,.10);stroke-width:1}
+.sch-arr{stroke:var(--cyan);stroke-width:2.2;filter:drop-shadow(0 0 6px rgba(59,232,255,.6))}
+.sch-dim{stroke:#7fa8d8;stroke-width:1;fill:none}
+.sch-dot{fill:#0a1120;stroke:var(--pink);stroke-width:2.4;filter:drop-shadow(0 0 5px rgba(255,79,163,.7))}
+.sch-txt{fill:#cfe6ff;font:700 12.5px 'JetBrains Mono',monospace}
+.sch-sub{fill:var(--mut);font:500 11.5px 'JetBrains Mono',monospace}
+.sch-pt{fill:var(--pink);font:700 13px 'JetBrains Mono',monospace}
+
+/* ============ РЕЗУЛЬТАТ ============ */
+.res-head{font-family:'Unbounded';font-weight:800;font-size:clamp(22px,5.6vw,30px);text-align:center;margin-bottom:6px}
+.res-banner{display:none;margin:12px 0 4px;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,84,112,.55);
+  background:rgba(255,84,112,.1);color:#ffb3c0;font-weight:700;font-size:14px;line-height:1.5;box-shadow:0 0 24px rgba(255,84,112,.2)}
+.res-banner.on{display:block}
+.score-wrap{position:relative;width:172px;height:172px;margin:20px auto 8px}
+.score-wrap svg{transform:rotate(-90deg)}
+.sbg{fill:none;stroke:#182742;stroke-width:9}
+.sfg{fill:none;stroke:var(--cyan);stroke-width:9;stroke-linecap:round;stroke-dasharray:452.39;stroke-dashoffset:452.39;
+  transition:stroke-dashoffset 1.3s cubic-bezier(.3,.8,.3,1);filter:drop-shadow(0 0 9px rgba(59,232,255,.6))}
+.score-num{position:absolute;inset:0;display:grid;place-items:center;font:800 38px 'Unbounded';color:var(--cyan);text-shadow:0 0 18px rgba(59,232,255,.5)}
+.score-num small{font:700 16px 'Unbounded';color:var(--mut);margin-left:6px;text-shadow:none}
+.res-verdict{text-align:center;font-weight:800;font-size:16px;margin-bottom:18px;color:var(--ink)}
+.res-rows{display:grid;gap:8px;margin-bottom:16px}
+.res-rows div{display:flex;justify-content:space-between;gap:12px;background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:11px 14px}
+.res-rows dt{color:var(--mut);font-size:13.5px;font-weight:600}
+.res-rows dd{font-weight:800;font-size:14px;text-align:right}
+.send-line{text-align:center;font:700 12.5px 'JetBrains Mono';color:var(--mut);margin:14px 0 16px;letter-spacing:.04em}
+.send-line.ok{color:var(--green);text-shadow:0 0 10px rgba(61,255,168,.4)}
+.send-line.warn{color:var(--amber)}
+
+/* ============ ОВЕРЛЕИ ============ */
+.overlay{position:fixed;inset:0;background:rgba(4,6,12,.84);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:none;place-items:center;z-index:80;padding:20px}
+.overlay.on{display:grid}
+.wcard{max-width:430px;width:100%;background:#170d18;border:1px solid rgba(255,84,112,.55);border-radius:18px;
+  padding:30px 22px;text-align:center;box-shadow:0 0 44px rgba(255,84,112,.35);animation:warnIn .4s cubic-bezier(.22,.9,.3,1)}
+@keyframes warnIn{from{transform:scale(.9);opacity:0}}
+.wicon{font-size:48px;display:block;margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(255,84,112,.9))}
+.wcard h3{font-family:'Unbounded';font-size:19px;color:var(--red);margin-bottom:10px;letter-spacing:.03em}
+.wcard p{color:#ffd7dd;font-size:14.5px;line-height:1.55;margin-bottom:20px}
+.wcard .btn{border-color:rgba(255,84,112,.6);color:#ffe1e6;background:rgba(255,84,112,.12)}
+.toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+  background:#131d36;border:1px solid var(--amber);color:var(--amber);padding:10px 20px;border-radius:999px;
+  font:700 13px 'JetBrains Mono';opacity:0;transition:.3s;z-index:60;box-shadow:0 0 22px rgba(255,182,72,.35);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:400px){
+  .panel{padding:20px 15px}
+  .qtext{font-size:16px}
+  .row2{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="fx" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<main class="app">
+
+  <!-- ===== ЭКРАН 1: СТАРТ ===== -->
+  <section id="scr-start" class="screen on">
+    <div class="panel">
+      <span class="badge">⚛ ФИЗИКА · 7 КЛАСС · ГО 7.2.1.4</span>
+      <h1>Расчёт <span class="hl">скорости</span> и <span class="hl">средней скорости</span></h1>
+      <p class="sub">Вычислять скорость и среднюю скорость движения тел</p>
+      <div class="teacher">👨‍🏫 Учитель физики: Кунгозин Даулет Багдашұлы
+        <small>Тест: 10 вопросов · максимум 10 баллов</small>
+      </div>
+
+      <div class="field" id="wFio">
+        <label for="fFio">Фамилия и имя ученика</label>
+        <input id="fFio" type="text" placeholder="Введите ФИ" autocomplete="name">
+      </div>
+      <div class="row2">
+        <div class="field" id="wKlass">
+          <label for="fKlass">Класс</label>
+          <select id="fKlass">
+            <option value="">— выберите —</option>
+            <option value="7 Б">7 Б</option>
+            <option value="7 В">7 В</option>
+          </select>
+        </div>
+        <div class="field" id="wVar">
+          <label for="fVar">Вариант</label>
+          <select id="fVar">
+            <option value="">— выберите —</option>
+            <option value="v1">Вариант 1</option>
+            <option value="v2">Вариант 2</option>
+          </select>
+        </div>
+      </div>
+      <button id="btnStart" class="btn btn-primary start-btn">Продолжить →</button>
+    </div>
+  </section>
+
+  <!-- ===== ЭКРАН 2: ДИСКЛЕЙМЕР ===== -->
+  <section id="scr-disc" class="screen">
+    <div class="panel">
+      <span class="badge">📜 ПРАВИЛА И АКАДЕМИЧЕСКАЯ ЧЕСТНОСТЬ</span>
+      <h1 style="font-size:clamp(20px,5.4vw,26px)">Прежде чем начать</h1>
+      <ul class="rules" style="margin-top:18px">
+        <li><span>10</span> вопросов: 6 тестовых (один правильный ответ) и 4 расчётные задачи.</li>
+        <li><span>1:30</span> на каждый вопрос. Когда время истечёт, тест автоматически перейдёт дальше.</li>
+        <li><span>⛔</span> Вернуться к предыдущим вопросам нельзя.</li>
+        <li><span>+1</span> балл за каждый правильный ответ. Максимум — 10 баллов.</li>
+        <li><span>🔢</span> В задачах ответ записывается только числом, без единиц измерения (например: 5 или 4,5).</li>
+        <li><span>👁</span> Сворачивать тест и переключаться в другие окна/приложения запрещено. Первое нарушение — предупреждение, повторное — тест завершится автоматически, попытка будет засчитана.</li>
+      </ul>
+      <label class="honest">
+        <input type="checkbox" id="chkHonest">
+        <span>Подтверждаю: я выполняю тест самостоятельно, честно, без калькулятора и посторонней помощи.</span>
+      </label>
+      <button id="btnAccept" class="btn btn-primary" disabled>Я готов(а). Начать тест ▶</button>
+    </div>
+  </section>
+
+  <!-- ===== ЭКРАН 3: ТЕСТ ===== -->
+  <section id="scr-quiz" class="screen">
+    <div class="qwho" id="qWho"></div>
+    <header class="hud">
+      <div>
+        <div class="qcount" id="qCount">ВОПРОС 1/10</div>
+        <div class="segs" id="segs"></div>
+      </div>
+      <div class="timer" id="timerBox">
+        <svg viewBox="0 0 64 64"><circle class="tbg" cx="32" cy="32" r="27"/><circle class="tfg" id="tfg" cx="32" cy="32" r="27"/></svg>
+        <div class="ttime" id="tTime">1:30</div>
+      </div>
+    </header>
+
+    <article class="qcard" id="qCard">
+      <div class="qmeta"><span class="chip" id="qType">ТЕСТ</span><span class="chip ghost" id="qVar"></span></div>
+      <h2 class="qtext" id="qText"></h2>
+      <div class="qfig" id="qFig"></div>
+      <div class="answers" id="answers"></div>
+    </article>
+
+    <div class="qfoot">
+      <button id="btnNext" class="btn btn-next" disabled>Далее →</button>
+    </div>
+  </section>
+
+  <!-- ===== ЭКРАН 4: РЕЗУЛЬТАТ ===== -->
+  <section id="scr-res" class="screen">
+    <div class="panel">
+      <div class="res-head">Тест завершён</div>
+      <div class="res-banner" id="resBanner">⚠ Тест завершён автоматически из-за повторного нарушения правил (анти-чит). Балл выставлен за ответы, данные до нарушения.</div>
+      <div class="score-wrap">
+        <svg width="172" height="172" viewBox="0 0 160 160"><circle class="sbg" cx="80" cy="80" r="72"/><circle class="sfg" id="sfg" cx="80" cy="80" r="72"/></svg>
+        <div class="score-num"><span id="scoreNum">0</span><small>/ 10</small></div>
+      </div>
+      <div class="res-verdict" id="verdict"></div>
+      <dl class="res-rows">
+        <div><dt>Ученик</dt><dd id="rName">—</dd></div>
+        <div><dt>Класс</dt><dd id="rKlass">—</dd></div>
+        <div><dt>Вариант</dt><dd id="rVar">—</dd></div>
+        <div><dt>Правильных ответов</dt><dd id="rScore">—</dd></div>
+        <div><dt>Использовано попыток</dt><dd id="rTry">—</dd></div>
+      </dl>
+      <div class="send-line" id="sendLine"></div>
+      <button class="btn btn-primary" onclick="location.reload()">Пройти заново ↻</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== ПРЕДУПРЕЖДЕНИЕ АНТИ-ЧИТА ===== -->
+<div class="overlay" id="warnOverlay">
+  <div class="wcard">
+    <span class="wicon">⚠️</span>
+    <h3>Предупреждение!</h3>
+    <p>Зафиксирован переход в другое окно или сворачивание теста. Это <b>первое предупреждение</b>. При повторном нарушении тест будет завершён автоматически, а попытка — засчитана.</p>
+    <button id="btnWarnOk" class="btn" type="button">Понял(а), продолжаю</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ================= НАСТРОЙКИ ================= */
+// ↓ Вставьте сюда URL веб-приложения Apps Script (см. инструкцию)
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzZQlwnEnGOUxCjEm-9kmkCeJibkb5rnatlkZCn794dQrSK4HVE931VHzfnMGzAMzyM/exec';
+const TIME_MS = 90_000;                 // 1 мин 30 сек на вопрос
+const AKEY = 'fiz7_speed_attempts_v1';  // ключ учёта попыток
+
+/* ================= ГРАФИКА: ГРАФИК НА «КЛЕТЧАТОЙ» СЕТКЕ ================= */
+let _gid = 0;
+function graphSVG({pts, xMax, yMax, xStep, yStep}){
+  const uid = 'gr' + (++_gid);
+  const W=360, H=272, ml=46, mr=16, mt=22, mb=42;
+  const pw=W-ml-mr, ph=H-mt-mb;
+  const X=x=>+(ml+x/xMax*pw).toFixed(1);
+  const Y=y=>+(mt+ph-y/yMax*ph).toFixed(1);
+  const fx=n=>{const v=+n.toFixed(2);return Number.isInteger(v)?v:v;};
+  let minor='', major='', ticks='', nums='';
+  const nx=Math.round(xMax/(xStep/2)), ny=Math.round(yMax/(yStep/2));
+  for(let i=0;i<=nx;i++){const x=i*xStep/2, px=X(x);
+    const seg=`M${px} ${Y(0)} L${px} ${Y(yMax)} `;
+    (i%2===0)?major+=seg:minor+=seg;
+    if(i%2===0&&i>0){ticks+=`M${px} ${Y(0)} l0 5 `;
+      nums+=`<text class="gx-num" x="${px}" y="${Y(0)+17}" text-anchor="middle">${fx(x)}</text>`;}
+  }
+  for(let j=0;j<=ny;j++){const y=j*yStep/2, py=Y(y);
+    const seg=`M${ml} ${py} L${ml+pw} ${py} `;
+    (j%2===0)?major+=seg:minor+=seg;
+    if(j%2===0&&j>0){ticks+=`M${ml} ${py} l-5 0 `;
+      nums+=`<text class="gx-num" x="${ml-8}" y="${py+3.5}" text-anchor="end">${fx(y)}</text>`;}
+  }
+  nums+=`<text class="gx-num" x="${ml-7}" y="${Y(0)+16}" text-anchor="end">0</text>`;
+  const line=pts.map(p=>`${X(p[0])},${Y(p[1])}`).join(' ');
+  const dots=pts.filter(p=>p[0]>0||p[1]>0).map(p=>`<circle class="gx-dot" cx="${X(p[0])}" cy="${Y(p[1])}" r="4"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="График зависимости пути от времени">
+    <defs><marker id="${uid}ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#9fc4ec"/></marker></defs>
+    <path class="gx-min" d="${minor}"/><path class="gx-maj" d="${major}"/>
+    <path class="gx-axis" fill="none" marker-end="url(#${uid}ar)" d="M${ml} ${Y(0)} L${W-mr+7} ${Y(0)}"/>
+    <path class="gx-axis" fill="none" marker-end="url(#${uid}ar)" d="M${ml} ${Y(0)} L${ml} ${mt-10}"/>
+    <path class="gx-axis" fill="none" d="${ticks}"/>
+    <text class="gx-lab" x="${W-mr+4}" y="${Y(0)-9}" text-anchor="end">t, с</text>
+    <text class="gx-lab" x="${ml+9}" y="${mt-8}">s, м</text>
+    ${nums}<polyline class="gx-line" points="${line}"/>${dots}</svg>`;
+}
+/* схема пути (рисунок на сетке) */
+/* схема пути (рисунок на сетке) */
+/* схема пути (рисунок на сетке) */
+function schemeSVG(segs){
+  const uid='sc'+(++_gid);
+  const W=360, H=180, y=100, x0=36, x1=W-36, span=(x1-x0)/segs.length;
+  let grid='';
+  for(let x=14;x<W;x+=14) grid+=`M${x} 0 V${H} `;
+  for(let yy=12;yy<H;yy+=14) grid+=`M0 ${yy} H${W} `;
+  
+  let dims='', times='', dots=''; 
+  const L=['A','B','C','D'];
+  
+  segs.forEach((s,i)=>{
+    const a=x0+i*span;
+    const b=a+span;
+    const m=(a+b)/2;
+    
+    // Размерные линии (расстояние сверху)
+    dims+=`<path class="sch-dim" d="M${a} ${y-28} v-8 M${b} ${y-28} v-8 M${a} ${y-32} H${b}"/>`;
+    dims+=`<text class="sch-txt" x="${m}" y="${y-42}" text-anchor="middle" font-size="13">${s.s}</text>`;
+    
+    // Время (снизу)
+    times+=`<text class="sch-sub" x="${m}" y="${y+38}" text-anchor="middle" font-size="12.5">${s.t}</text>`;
+  });
+  
+  // Точки и их подписи
+  for(let i=0;i<=segs.length;i++){
+    const px=x0+i*span;
+    dots+=`<circle class="sch-dot" cx="${px}" cy="${y}" r="5"/>`;
+    dots+=`<text class="sch-pt" x="${px}" y="${y+24}" text-anchor="middle" font-size="14" font-weight="700">${L[i]}</text>`;
+  }
+  
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Схема пути">
+    <defs>
+      <marker id="${uid}a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <path d="M0 0 L8 3 L0 6 Z" fill="#3be8ff"/>
+      </marker>
+    </defs>
+    <path class="sch-grid" fill="none" d="${grid}"/>
+    <path class="sch-arr" fill="none" marker-end="url(#${uid}a)" d="M${x0} ${y} H${x1}"/>
+    <text class="sch-txt" x="${W-16}" y="${y-12}" text-anchor="end" font-size="13">s, м</text>
+    ${dims}${dots}${times}
+  </svg>`;
+}
+
+/* ================= БАНК ВОПРОСОВ ================= */
+const BANK = {
+ v1:[
+  {t:'mc', q:'По какой формуле вычисляют скорость равномерного движения?',
+   opts:['v = s / t','v = s · t','v = t / s','v = s − t'], a:'v = s / t'},
+  {t:'mc', q:'Основная единица скорости в системе СИ:',
+   opts:['км/ч','м','м/с','с · м'], a:'м/с'},
+  {t:'mc', q:'Средняя скорость тела за всё время движения равна…',
+   opts:['среднему арифметическому скоростей на отдельных участках',
+         'отношению всего пройденного пути ко всему времени движения',
+         'произведению всего пути на время движения',
+         'наибольшей из скоростей на отдельных участках'],
+   a:'отношению всего пройденного пути ко всему времени движения'},
+  {t:'mc', q:'На рисунке показан график зависимости пути <i>s</i> от времени <i>t</i> при равномерном движении. Определите скорость тела.',
+   opts:['2 м/с','4 м/с','8 м/с','0,5 м/с'], a:'2 м/с',
+   fig:()=>graphSVG({pts:[[0,0],[4,8]],xMax:5,yMax:8,xStep:1,yStep:2})},
+  {t:'mc', q:'Тело движется равномерно и проходит 45 м за 9 с. Чему равна скорость тела?',
+   opts:['5 м/с','4 м/с','54 м/с','405 м/с'], a:'5 м/с'},
+  {t:'mc', q:'Автомобиль проехал 72 км за 2 ч. Чему равна его скорость в м/с?',
+   opts:['36 м/с','10 м/с','20 м/с','144 м/с'], a:'10 м/с'},
+  {t:'num', q:'Велосипедист проехал путь 600 м за 2 мин. Определите скорость велосипедиста в м/с.', a:5},
+  {t:'num', q:'Турист прошёл первый участок пути длиной 300 м за 60 с, а второй участок длиной 100 м — за 40 с. Найдите среднюю скорость туриста на всём пути в м/с.', a:4,
+ fig:()=>schemeSVG([{s:'300 м',t:'t₁ = 60 с'},{s:'100 м',t:'t₂ = 40 с'}])},
+  {t:'num', q:'Выразите скорость 54 км/ч в м/с.', a:15},
+  {t:'num', q:'Первые 15 с тело двигалось со скоростью 4 м/с, а следующие 5 с — со скоростью 6 м/с. Найдите среднюю скорость тела за всё время движения в м/с.', a:4.5},
+ ],
+ v2:[
+  {t:'mc', q:'Скорость — это физическая величина, равная…',
+   opts:['отношению пути ко времени равномерного движения',
+         'произведению пути на время движения',
+         'отношению времени к пройденному пути',
+         'разности пути и времени движения'],
+   a:'отношению пути ко времени равномерного движения'},
+  {t:'mc', q:'Какая из перечисленных величин является единицей скорости?',
+   opts:['кг','м/с','Н','Дж'], a:'м/с'},
+  {t:'mc', q:'По какой формуле вычисляют среднюю скорость тела за весь путь?',
+   opts:['v<sub>ср</sub> = (v₁ + v₂) / 2',
+         'v<sub>ср</sub> = s<sub>общ</sub> / t<sub>общ</sub>',
+         'v<sub>ср</sub> = t<sub>общ</sub> / s<sub>общ</sub>',
+         'v<sub>ср</sub> = v₁ · v₂'],
+   a:'v<sub>ср</sub> = s<sub>общ</sub> / t<sub>общ</sub>'},
+  {t:'mc', q:'На рисунке показан график зависимости пути <i>s</i> от времени <i>t</i> при равномерном движении. Определите скорость тела.',
+   opts:['3 м/с','5 м/с','15 м/с','75 м/с'], a:'3 м/с',
+   fig:()=>graphSVG({pts:[[0,0],[5,15]],xMax:6,yMax:16,xStep:1,yStep:4})},
+  {t:'mc', q:'Конькобежец проходит 150 м за 10 с. Чему равна его скорость?',
+   opts:['15 м/с','1,5 м/с','1500 м/с','160 м/с'], a:'15 м/с'},
+  {t:'mc', q:'Мотоциклист проехал 45 км за 0,5 ч. Чему равна его скорость в м/с?',
+   opts:['25 м/с','90 м/с','22,5 м/с','45 м/с'], a:'25 м/с'},
+  {t:'num', q:'Пловец проплыл 150 м за 75 с. Определите скорость пловца в м/с.', a:2},
+  {t:'num', q:'Автобус проехал первый участок пути 1800 м за 2 мин, а второй участок 1200 м — за 3 мин. Найдите среднюю скорость автобуса на всём пути в м/с.', a:10,
+ fig:()=>schemeSVG([{s:'1800 м',t:'t₁ = 2 мин'},{s:'1200 м',t:'t₂ = 3 мин'}])},
+
+  {t:'num', q:'Выразите скорость 108 км/ч в м/с.', a:30},
+  {t:'num', q:'Первую половину времени автомобиль двигался со скоростью 20 м/с, а вторую половину времени — со скоростью 30 м/с. Найдите среднюю скорость автомобиля за всё время движения в м/с.', a:25},
+ ]
+};
+
+/* ================= СОСТОЯНИЕ ================= */
+const $ = s => document.querySelector(s);
+const shuffle = a => { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[b[i],b[j]]=[b[j],b[i]];} return b; };
+const state = {name:'',klass:'',variant:'',quiz:[],idx:0,answers:[],sel:null,num:NaN,
+               remain:TIME_MS,deadline:0,timerId:null,attempt:0,done:false,lock:false};
+const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent) ||
+              (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+const TC = 2*Math.PI*27, RC = 2*Math.PI*72;
+
+/* ================= ЭКРАНЫ ================= */
+const go = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id)); window.scrollTo({top:0}); };
+
+/* ---- Экран 1 ---- */
+$('#btnStart').addEventListener('click', ()=>{
+  const fio=$('#fFio').value.trim(), kl=$('#fKlass').value, vr=$('#fVar').value;
+  let ok=true;
+  [['#wFio',fio.length>=3],['#wKlass',!!kl],['#wVar',!!vr]].forEach(([w,v])=>{
+    $(w).classList.toggle('err',!v); if(!v) ok=false;});
+  if(!ok) return;
+  state.name=fio; state.klass=kl; state.variant=vr;
+  go('scr-disc');
+});
+/* ---- Экран 2 ---- */
+$('#chkHonest').addEventListener('change', e=>{ $('#btnAccept').disabled=!e.target.checked; });
+$('#btnAccept').addEventListener('click', startQuiz);
+
+/* ================= ЗАПУСК ТЕСТА ================= */
+function startQuiz(){
+  state.idx=0; state.answers=[]; state.done=false; state.lock=false;
+  state.quiz = BANK[state.variant].map(q=>{
+    if(q.t!=='mc') return {...q};
+    const n={...q};
+    if(q.fig) n.fig=q.fig();
+    n.opts=shuffle(q.opts);
+    return n;
+  });
+  state.attempt = bumpAttempts();
+  $('#qWho').textContent=`${state.name} · ${state.klass}`;
+  $('#qVar').textContent = state.variant==='v1'?'ВАРИАНТ 1':'ВАРИАНТ 2';
+  $('#segs').innerHTML='<i></i>'.repeat(10);
+  go('scr-quiz');
+  acStart();
+  renderQ();
+}
+
+/* ================= ОТРИСОВКА ВОПРОСА ================= */
+function renderQ(){
+  state.lock=false; state.sel=null; state.num=NaN;
+  const q=state.quiz[state.idx];
+  $('#qCount').textContent=`ВОПРОС ${state.idx+1}/10`;
+  document.querySelectorAll('#segs i').forEach((el,i)=>{
+    el.className = i<state.idx?'done':(i===state.idx?'cur':'');});
+  $('#qType').textContent = q.t==='mc'?'ТЕСТ':'ЗАДАЧА';
+  $('#qType').className   = 'chip'+(q.t==='num'?' task':'');
+  $('#qText').innerHTML=q.q;
+  $('#qFig').innerHTML = q.fig||'';
+  $('#qFig').style.display = q.fig?'':'none';
+  const ans=$('#answers');
+  if(q.t==='mc'){
+    ans.innerHTML=q.opts.map((o,i)=>
+      `<button type="button" class="opt" data-i="${i}"><span class="opt-k">${'АБВГ'[i]}</span><span class="opt-t">${o}</span></button>`).join('');
+    ans.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+      ans.querySelectorAll('.opt').forEach(x=>x.classList.remove('lit'));
+      b.classList.add('lit');
+      state.sel=q.opts[+b.dataset.i];
+      arm();
+    }));
+  }else{
+    ans.innerHTML=`<div class="numwrap"><label class="numlab" for="numIn">Ответ:</label>
+      <input id="numIn" class="numin" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="?">
+      <span class="numhint">только число,<br>без единиц</span></div>`;
+    const inp=$('#numIn');
+    inp.addEventListener('input',()=>{
+      inp.value=inp.value.replace(/[^\d.,]/g,'');
+      const v=parseFloat(inp.value.replace(',','.'));
+      inp.classList.toggle('lit',inp.value!==''&&Number.isFinite(v));
+      state.num=v; arm();
+    });
+    inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!$('#btnNext').disabled) next(); });
+  }
+  const nb=$('#btnNext'); nb.disabled=true; nb.classList.remove('armed');
+  nb.textContent = state.idx===9?'Завершить тест ✓':'Далее →';
+  const card=$('#qCard'); card.style.animation='none'; void card.offsetWidth; card.style.animation='';
+  state.remain=TIME_MS; startTimer();
+}
+function arm(){
+  const on = state.quiz[state.idx].t==='mc' ? state.sel!==null : Number.isFinite(state.num);
+  const nb=$('#btnNext'); nb.disabled=!on; nb.classList.toggle('armed',on);
+}
+
+/* ================= ТАЙМЕР ================= */
+function startTimer(){ state.deadline=Date.now()+state.remain; stopTimer(); state.timerId=setInterval(tick,200); tick(); }
+function stopTimer(){ clearInterval(state.timerId); state.timerId=null; }
+function pauseTimer(){ state.remain=Math.max(0,state.deadline-Date.now()); stopTimer(); }
+function tick(){
+  const r=Math.max(0,state.deadline-Date.now());
+  const s=Math.ceil(r/1000);
+  $('#tTime').textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  $('#tfg').style.strokeDashoffset=TC*(1-r/TIME_MS);
+  const box=$('#timerBox');
+  box.classList.toggle('warn',s<=30&&s>10);
+  box.classList.toggle('danger',s<=10);
+  if(r<=0){ stopTimer(); timeUp(); }
+}
+function timeUp(){
+  if(state.done||state.lock) return;
+  state.lock=true; state.answers.push({given:null,ok:false});
+  toast('⏱ Время вышло!');
+  setTimeout(advance,800);
+}
+
+/* ================= ОТВЕТЫ / ПЕРЕХОДЫ ================= */
+// ================= ОТВЕТЫ / ПЕРЕХОДЫ ================= */
+function next(){
+  if(state.lock||state.done||$('#btnNext').disabled) return;
+  stopTimer(); state.lock=true;
+  const q=state.quiz[state.idx];
+  const ok = q.t==='mc' ? state.sel===q.a
+                        : Number.isFinite(state.num)&&Math.abs(state.num-q.a)<=0.005;
+  state.answers.push({given:q.t==='mc'?state.sel:state.num, ok});
+  advance();
+}
+
+// ← ДОБАВЬТЕ ЭТУ СТРОКУ
+$('#btnNext').addEventListener('click', next);
+
+function advance(){
+  state.idx++;
+  if(state.idx>=state.quiz.length) finish('done'); else renderQ();
+}
+
+/* ================= ФИНИШ ================= */
+function finish(reason){
+  if(state.done) return;
+  state.done=true; stopTimer(); acStop();
+  const score=state.answers.filter(x=>x&&x.ok).length;
+  const status=reason==='anticheat'?'Прерван (анти-чит)':'Завершён';
+  $('#resBanner').classList.toggle('on',reason==='anticheat');
+  $('#rName').textContent=state.name;
+  $('#rKlass').textContent=state.klass;
+  $('#rVar').textContent=state.variant==='v1'?'Вариант 1':'Вариант 2';
+  $('#rScore').textContent=`${score} из 10`;
+  $('#rTry').textContent=state.attempt;
+  $('#verdict').textContent = score===10?'Максимальный результат! 🏆'
+    : score>=8?'Отличный результат!': score>=6?'Хороший результат'
+    : score>=4?'Неплохо, но стоит повторить тему':'Рекомендуется повторить тему';
+  go('scr-res');
+  $('#scoreNum').textContent='0'; $('#sfg').style.strokeDashoffset=RC;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ $('#sfg').style.strokeDashoffset=RC*(1-score/10); }));
+  const t0=performance.now();
+  (function cu(t){ const p=Math.min(1,(t-t0)/900);
+    $('#scoreNum').textContent=Math.round(score*p);
+    if(p<1) requestAnimationFrame(cu); })(t0);
+  sendResults(score,status);
+}
+
+/* ================= ПОПЫТКИ (localStorage) ================= */
+const loadMap=()=>{try{return JSON.parse(localStorage.getItem(AKEY))||{};}catch(e){return{};}};
+const pKey=()=>(state.name+'|'+state.klass).trim().toLowerCase();
+function bumpAttempts(){
+  const m=loadMap(); m[pKey()]=(m[pKey()]||0)+1;
+  try{localStorage.setItem(AKEY,JSON.stringify(m));}catch(e){}
+  return m[pKey()];
+}
+
+/* ================= ОТПРАВКА В GOOGLE SHEETS ================= */
+async function sendResults(score,status){
+  const el=$('#sendLine');
+  const payload={ts:Date.now(),name:state.name,klass:state.klass,
+    variant:state.variant==='v1'?'Вариант 1':'Вариант 2',
+    score,max:10,status,attempt:state.attempt,ua:navigator.userAgent};
+  if(!SHEET_URL){ el.textContent='⚠ Журнал не подключён (не указан адрес веб-приложения)'; el.className='send-line warn'; return; }
+  el.textContent='⏳ Отправка результата в журнал…';
+  try{
+    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    el.textContent='✅ Результат отправлен в Google Таблицы'; el.className='send-line ok';
+  }catch(err){
+    el.textContent='⚠ Не удалось отправить результат. Сообщите учителю.'; el.className='send-line warn';
+  }
+}
+
+/* ================= АНТИ-ЧИТ =================
+   1-е нарушение → предупреждение (таймер на паузе), 2-е → завершение теста.
+   Ложные срабатывания на iPhone и на экранной клавиатуре исключены. */
+const AC={on:false,warn:0,hiddenAt:0,lastInput:0,baseH:0,watch:null};
+
+function acStart(){
+  AC.on=true; AC.warn=0; AC.hiddenAt=0; AC.baseH=window.innerHeight;
+  AC.watch=setInterval(acTick,400);
+}
+function acStop(){ AC.on=false; clearInterval(AC.watch); $('#warnOverlay').classList.remove('on'); }
+
+/* фиксация касаний полей ввода → клавиатура не считается нарушением */
+document.addEventListener('pointerdown',e=>{ if(e.target.closest('input,select,textarea')) AC.lastInput=Date.now(); },{passive:true});
+document.addEventListener('focusin',e=>{ if(e.target.matches&&e.target.matches('input,select,textarea')) AC.lastInput=Date.now(); });
+
+function inputFocused(){
+  const ae=document.activeElement;
+  return ae&&(ae.tagName==='INPUT'||ae.tagName==='SELECT'||ae.tagName==='TEXTAREA');
+}
+function violate(){
+  if(!AC.on||state.done) return;
+  if(inputFocused()) return;               // открыта клавиатура — игнорируем
+  AC.warn++;
+  if(AC.warn===1){ pauseTimer(); $('#warnOverlay').classList.add('on'); }
+  else finish('anticheat');
+}
+$('#btnWarnOk').addEventListener('click',()=>{
+  $('#warnOverlay').classList.remove('on');
+  AC.lastInput=Date.now();
+  if(!state.done) startTimer();
+});
+
+/* смена видимости вкладки (порог 700 мс — защита от ложных событий iOS) */
+document.addEventListener('visibilitychange',()=>{
+  if(!AC.on) return;
+  if(document.hidden){ AC.hiddenAt=Date.now(); }
+  else if(AC.hiddenAt){
+    const dur=Date.now()-AC.hiddenAt; AC.hiddenAt=0;
+    if(dur>=700) violate();
+  }
+});
+function acTick(){ /* нарушение, пока вкладка скрыта долго */
+  if(AC.on&&document.hidden&&AC.hiddenAt&&Date.now()-AC.hiddenAt>=700){ AC.hiddenAt=0; violate(); }
+}
+
+/* потеря фокуса окном (второе окно снизу на Samsung и т.п.) — только НЕ на iOS */
+window.addEventListener('blur',()=>{
+  if(!AC.on||isIOS) return;
+  setTimeout(()=>{
+    if(!AC.on||document.hidden) return;
+    if(inputFocused()) return;
+    if(Date.now()-AC.lastInput<2500) return;
+    if(!document.hasFocus()) violate();
+  },700);
+});
+/* сильное «сжатие» окна без фокуса — выдвижное окно поверх теста (только НЕ iOS) */
+window.addEventListener('resize',()=>{
+  if(!AC.on) return;
+  if(window.innerHeight>AC.baseH) AC.baseH=window.innerHeight;
+  if(isIOS||inputFocused()||document.hasFocus()) return;
+  if(window.innerHeight<AC.baseH*0.62) violate();
+});
+window.addEventListener('orientationchange',()=>setTimeout(()=>{ if(AC.on) AC.baseH=window.innerHeight; },450));
+
+/* ================= СЛУЖЕБНОЕ ================= */
+let toastT;
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1500);
+}
+</script>
+</body>
+</html>
